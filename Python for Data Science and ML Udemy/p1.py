@@ -1,0 +1,3 @@
+#lambda function in Python...
+t = lambda var:var*3
+print(t(5))

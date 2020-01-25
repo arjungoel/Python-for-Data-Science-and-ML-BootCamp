@@ -1,0 +1,5 @@
+apes ->primates->human
+
+automobile->2-wheel vehicle->motorbike 
+
+fuel-vehicle->motorbike
