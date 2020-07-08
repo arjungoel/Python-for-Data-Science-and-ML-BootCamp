@@ -41,7 +41,7 @@ def get_s3_client(account):
 
 
 # To create header of the file
-header_csv = ['S_No', 'bucket', 'rules']
+header_csv = ['S_No', 'account_number', 'bucket_name', 'encryption_status']
 S_No = 1
 
 # to create dynamic filename
@@ -76,7 +76,7 @@ def s3_bucket_encryption():
                 global S_No
 
                 #print(S_No, bucket, rules)
-                writer.writerow([S_No, bucket, rules])
+                writer.writerow([S_No, account, bucket['Name'], rules])
                 S_No += 1
 
 
