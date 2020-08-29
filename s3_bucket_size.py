@@ -71,12 +71,12 @@ def s3_bucket_size():
                             Bucket=bucket_name)['Contents']
                         total_size = 0
                         sum = 0
-                        pb = 10**15
+                        TB = 10**12
                         for k in content:
                             total_size += k['Size']
                             sum += total_size
-                            value = sum/pb
-                        print(f"{bucket_name} size is {value} petabytes")
+                            value = sum/TB
+                        print(f"{bucket_name} size is {value} terabytes")
                         global S_No
 
                         writer.writerow([S_No, account, bucket_name, value])
