@@ -2,7 +2,6 @@ import os
 import boto3
 import csv
 import logging
-from pprint import pprint
 from botocore.exceptions import ClientError
 
 aws_regions = ["ap-northeast-1", "ap-southeast-1",
@@ -47,7 +46,7 @@ def get_sts_client(account, region):
 
 # To create header of the file
 header_csv = ['S_No', 'Account', 'Region', 'InstanceId', 'InstanceType', 'AttachmentId', 'ENIStatus', 'NetworkInterfaceId',
-              'SubnetId', 'VpcId', 'AvailabilityZone', 'PrivateIpAddress']
+              'SubnetId', 'VpcId', 'AvailabilityZone', 'PrivateIpAddress', 'TGWAttachmentId', 'TGWOwnerId', 'ResourceType', 'State']
 filename = "eni_service_details.csv"
 file = open(filename, 'w', newline='\n')
 writer = csv.writer(file, lineterminator='\n')
@@ -70,6 +69,7 @@ def eni_details():
                 ec2 = boto3Session.client('ec2', region)
                 instance = ec2.describe_instances()
                 response = ec2.describe_network_interfaces()
+                tg_response = ec2.describe_transit_gateway_attachments()
                 try:
                     for params in instance['Reservations']:
                         for param in params['Instances']:
@@ -77,7 +77,8 @@ def eni_details():
                             instance_type = param['InstanceType']
                     for network_interface in response['NetworkInterfaces']:
                         if 'Attachment' in network_interface:
-                            attachment_id = network_interface['Attachment']['AttachmentId']
+                            if 'AttachmentId' in network_interface['Attachment']:
+                                attachment_id = network_interface['Attachment']['AttachmentId']
                             eni_status = network_interface['Attachment']['Status']
                             network_interface_id = network_interface['NetworkInterfaceId']
                             subnet_id = network_interface['SubnetId']
@@ -87,11 +88,17 @@ def eni_details():
                             for ip_addresses in network_interface['PrivateIpAddresses']:
                                 private_ip_address = ip_addresses['PrivateIpAddress']
 
-                            # stores output in the csv file
-                            S_No += 1
-                            list_params = [S_No, account,
-                                           region, instance_id, instance_type, attachment_id, eni_status, network_interface_id, subnet_id, vpc_id, availability_zone, private_ip_address]
-                            writer.writerow(list_params)
+                    for keys in tg_response['TransitGatewayAttachments']:
+                        tgw_attachment_id = keys['TransitGatewayAttachmentId']
+                        tgw_owner_id = keys['TransitGatewayOwnerId']
+                        resource_type = keys['ResourceType']
+                        state = keys['State']
+
+                        # stores output in the csv file
+                        S_No += 1
+                        list_params = [S_No, account,
+                                       region, instance_id, instance_type, attachment_id, eni_status, network_interface_id, subnet_id, vpc_id, availability_zone, private_ip_address, tgw_attachment_id, tgw_owner_id, resource_type, state]
+                        writer.writerow(list_params)
                 except ClientError as e:
                     print("Instance doesn't exist" + e)
 
