@@ -28,7 +28,7 @@ def get_aws_key_and_token(arn: str) -> dict:
 def get_user():
     user = getpass.getuser()
     if len(user) < 4:
-        user = input('what is your acf2 login user? ')
+        user = input('Enter your login id: ')
     return user + 'su'
 
 
