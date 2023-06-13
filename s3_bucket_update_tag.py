@@ -34,4 +34,5 @@ for bucket in response['Buckets']:
             }
         )
 
-    print(f"The incorrect tag {tags['Key']} has been updated to cost_centre for bucket {bucket['Name']}")
+# updating the tag key with the right semantics        
+print(f"The incorrect tag {tags['Key']} has been updated to cost_centre for bucket {bucket['Name']}")
