@@ -21,7 +21,7 @@ for bucket in response['Buckets']:
 
 # replace wrong tag with the right tag key
 for bucket in response['Buckets']:
-    if 'cost_center' or 'costcenter' or 'costcentre' in tags['Key']:
+    if tags['Key'] in ('cost_center', 'costcenter', 'costcentre', 'cost_Center', 'cost_Centre'):
         update_tag = client.put_bucket_tagging(
             Bucket=bucket['Name'],
             Tagging={
@@ -33,6 +33,3 @@ for bucket in response['Buckets']:
                 ]
             }
         )
-
-# updating the tag key with the right semantics        
-print(f"The incorrect tag {tags['Key']} has been updated to cost_centre for bucket {bucket['Name']}")
