@@ -12,7 +12,7 @@ for bucket in response['Buckets']:
             )
         value = result['TagSet']
         for tags in value:
-            if 'cost' in tags['Key']:
+            if 'cost' or 'Cost' in tags['Key']:
                 print(f"The bucket name is: {bucket['Name']} and the tags are: {tags['Key']}:{tags['Value']}")
     except ClientError as e:
         if e.response['Error']['Code'] == 'TagSetNotFoundError':
